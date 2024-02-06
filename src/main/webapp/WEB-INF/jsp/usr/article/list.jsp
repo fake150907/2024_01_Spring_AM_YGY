@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:if test="${boardId == null }">
-	<c:set var="pageTitle" value="ARTICLE LIST"></c:set>
-</c:if>
 <c:set var="pageTitle" value="#{board.code } ARTICLE LIST"></c:set>
 <%@ include file="../common/head.jspf"%>
+
+
 <section class="mt-8 text-xl px-4">
 	<div class="mx-auto overflow-x-auto">
+		<div class="badge badge-outline">${articlesCount }개</div>
 		<table class="table-box-1 table" border="1">
 			<colgroup>
 				<col style="width: 10%" />
@@ -33,43 +33,52 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<div class="pagination flex justify-center mt-3">
-			<div class="btn-group">
-				<c:if test="${page > 1}">
-					<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-						href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=1">◀◀</a>
-				</c:if>
-				<c:if test="${boardId == null }">
-					<c:forEach var="i" begin="${pageStartNum }" end="${pageEndNum}" step="1">
-						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
-					</c:forEach>
-				</c:if>
-				<c:if test="${board.id == 1}">
-					<c:forEach var="i" begin="${pageStartNum }" end="${noticeBoardTotalPage }" step="1">
-						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
-					</c:forEach>
-				</c:if>
-				<c:if test="${board.id == 2}">
-					<c:forEach var="i" begin="${pageStartNum }" end="${freeBoardTotalPage }" step="1">
-						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
-					</c:forEach>
-				</c:if>
-				<c:if test="${board.id == 3}">
-					<c:forEach var="i" begin="${pageStartNum }" end="${qnaBoardTotalPage }" step="1">
-						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
-					</c:forEach>
-				</c:if>
-				<c:if test="${totalPage > page }">
-					<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
-						href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${page+1}">▶▶</a>
-				</c:if>
-			</div>
-		</div>
 	</div>
+	<!-- 	동적 페이징 -->
+	<div class="pagination flex justify-center mt-3">
+		<c:set var="paginationLen" value="3" />
+		<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
+		<c:set var="endPage" value="${page +  paginationLen  <= pagesCount ? page + paginationLen : pagesCount}" />
+
+		<c:if test="${startPage > 1 }">
+			<a class="btn btn-sm" href="?page=1&boardId=${boardId }">1</a>
+			<button class="btn btn-sm btn-disabled">...</button>
+		</c:if>
+
+		<c:forEach begin="${startPage }" end="${endPage }" var="i">
+			<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }" href="?page=${i }&boardId=${boardId}">${i }</a>
+		</c:forEach>
+
+		<c:if test="${endPage < pagesCount }">
+			<button class="btn btn-sm btn-disabled">...</button>
+			<a class="btn btn-sm" href="?page=${pagesCount }&boardId=${boardId }">${pagesCount }</a>
+		</c:if>
+
+	</div>
+
+	<!-- 	원래 페이징 -->
+	<%-- 	<div class="pagination flex justify-center mt-3">
+		<div class="btn-group">
+			<c:forEach begin="1" end="${pagesCount }" var="i">
+				<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }" href="?page=${i }&boardId=${param.boardId}">${i }</a>
+			</c:forEach>
+		</div>
+	</div> --%>
+	<form class="flex justify-center mt-3" action="../article/list" method="POST">
+		<select class="select select-primary w-full max-w-xs">
+			<option disabled selected>검색어타입을 선택하세요</option>
+			<option>Title</option>
+			<option>Body</option>
+			<option>Writer</option>
+		</select>
+		<div>
+			<input class="input input-bordered input-primary w-full max-w-xs" autocomplete="off" type="text"
+				placeholder="검색어를 입력해주세요" name="body" />
+		</div>
+		<div class="">
+			<input class="btn btn-outline btn-info" type="submit" value="검색" />
+		</div>
+	</form>
 </section>
 
 

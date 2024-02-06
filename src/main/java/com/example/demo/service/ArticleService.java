@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,46 +78,33 @@ public class ArticleService {
 		return articleRepository.getArticle(id);
 	}
 
-	public List<Article> getArticles(int page) {
-		int itemsInAPage = getItemsInAPage();
+	public List<Article> getArticles() {
+		return articleRepository.getArticles();
+	}
+
+	public int getArticlesCount(int boardId) {
+		return articleRepository.getArticlesCount(boardId);
+	}
+//
+//	public List<Article> getForPrintArticles(int boardId) {
+//		return articleRepository.getForPrintArticles(boardId);
+//	}
+
+	public List<Article> getForPrintArticles(int boardId, int itemsInAPage, int page) {
+
+//		SELECT * FROM article WHERE boardId = 1 ORDER BY id DESC LIMIT 0, 10; 1page
+//		SELECT * FROM article WHERE boardId = 1 ORDER BY id DESC LIMIT 10, 10; 2page
+
 		int limitFrom = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
 
-		List<Article> articleRows = articleRepository.getArticles(limitFrom, itemsInAPage);
-
-		return articleRows;
+		return articleRepository.getForPrintArticles(boardId, limitFrom, limitTake);
 	}
 
-	public List<Article> getForPrintArticles(int boardId, int page) {
-		int itemsInAPage = getItemsInAPage();
+	public List<Article> getForSearchKeywordArticles(String searchKeyword, int boardId, int itemsInAPage, int page) {
 		int limitFrom = (page - 1) * itemsInAPage;
-
-		List<Article> articleRows = articleRepository.getArticleRows(boardId, limitFrom, itemsInAPage);
-
-		return articleRows;
-	}
-
-	public int getItemsInAPage() {
-		return 10;
-	}
-
-	public int getTotalPage() {
-		int itemsInAPage = getItemsInAPage();
-
-		int totalCnt = articleRepository.getArticlesTotalCount();
-		int totalPage = (int) Math.ceil((double) totalCnt / itemsInAPage);
-		return totalPage;
-	}
-
-	public List<Integer> getBoardTotalPage() {
-		int itemsInAPage = getItemsInAPage();
-
-		List<Integer> boardTotalCnt = articleRepository.getBoardTotalCount();
-		List<Integer> boardTotalPage = new ArrayList<>();
-		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(0) / itemsInAPage));
-		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(1) / itemsInAPage));
-		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(2) / itemsInAPage));
-
-		return boardTotalPage;
+		int limitTake = itemsInAPage;
+		return articleRepository.getForSearchKeywordArticles(searchKeyword, boardId, limitFrom, limitTake);
 	}
 
 }

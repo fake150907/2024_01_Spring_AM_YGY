@@ -1,7 +1,6 @@
 package com.example.demo.repository;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -63,44 +62,71 @@ public interface ArticleRepository {
 			INNER JOIN `member` AS M
 			ON A.memberId = M.id
 			ORDER BY A.id DESC
-			LIMIT #{limitFrom}, #{itemsInAPage}
 			""")
-	public List<Article> getArticles(int limitFrom, int itemsInAPage);
+	public List<Article> getArticles();
+
+//	@Select("""
+//			<script>
+//			SELECT A.*, M.nickname AS extra__writer
+//			FROM article AS A
+//			INNER JOIN `member` AS M
+//			ON A.memberId = M.id
+//			WHERE 1
+//			<if test="boardId != 0">
+//				AND A.boardId = #{boardId}
+//			</if>
+//			ORDER BY A.id DESC
+//			</script>
+//			""")
+//	public List<Article> getForPrintArticles(int boardId);
 
 	@Select("""
-			SELECT A.*, M.nickname AS extra__writer
-			FROM article AS A
-			INNER JOIN `member` AS M
-			ON A.memberId = M.id
-			WHERE boardId = #{boardId}
-			ORDER BY A.id DESC
-			""")
-	public List<Article> getForPrintArticles(int boardId);
-
-	@Select("""
-			SELECT A.*, M.nickname AS extra__writer
-			FROM article AS A
-			INNER JOIN `member` AS M
-			ON A.memberId = M.id
-			WHERE boardId = #{boardId}
-			ORDER BY A.id DESC
-			LIMIT #{limitFrom}, #{itemsInAPage}
-			""")
-	public List<Article> getArticleRows(int boardId, int limitFrom, int itemsInAPage);
-
-	@Select("""
+			<script>
 			SELECT COUNT(*) AS cnt
 			FROM article
+			WHERE 1
+			<if test="boardId != 0">
+				AND boardId = #{boardId}
+			</if>
+			ORDER BY id DESC
+			</script>
 			""")
-	public int getArticlesTotalCount();
+	public int getArticlesCount(int boardId);
 
 	@Select("""
-			SELECT COUNT(*)
+			<script>
+			SELECT A.*, M.nickname AS extra__writer
 			FROM article AS A
-			INNER JOIN board AS B
-			ON A.boardId = B.id
-			GROUP BY boardId;
+			INNER JOIN `member` AS M
+			ON A.memberId = M.id
+			WHERE 1
+			<if test="boardId != 0">
+				AND A.boardId = #{boardId}
+			</if>
+			ORDER BY A.id DESC
+			<if test="limitFrom >= 0 ">
+				LIMIT #{limitFrom}, #{limitTake}
+			</if>
+			</script>
 			""")
-	public List<Integer> getBoardTotalCount();
+	public List<Article> getForPrintArticles(int boardId, int limitFrom, int limitTake);
+
+	@Select("""
+			<script>
+			SELECT A.*, M.nickname AS extra__writer
+			FROM article AS A
+			INNER JOIN `member` AS M
+			ON A.memberId = M.id
+			WHERE 1 AND A.title LIKE %#{searchKeyword}%
+			<if test="boardId != 0">
+				AND A.boardId = #{boardId}
+			</if>
+			ORDER BY A.id DESC
+			<if test="limitFrom >= 0 ">
+				LIMIT #{limitFrom}, #{limitTake}
+			</if>
+			</script>
+			""")
+	public List<Article> getForSearchKeywordArticles(String searchKeyword, int boardId, int limitFrom, int limitTake);
 
 }
