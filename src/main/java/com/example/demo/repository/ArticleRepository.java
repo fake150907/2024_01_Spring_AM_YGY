@@ -117,7 +117,7 @@ public interface ArticleRepository {
 			FROM article AS A
 			INNER JOIN `member` AS M
 			ON A.memberId = M.id
-			WHERE 1 AND A.title LIKE %#{searchKeyword}%
+			WHERE 1 AND A.title LIKE '%#{searchKeyword}%'
 			<if test="boardId != 0">
 				AND A.boardId = #{boardId}
 			</if>

@@ -89,6 +89,59 @@ public class UsrArticleController {
 		return "usr/article/list";
 	}
 
+	@RequestMapping("/usr/article/searchKeywordList")
+	public String showSeachKeywordList(HttpServletRequest req, Model model,
+			@RequestParam(defaultValue = "1") int boardId, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(required = false) String searchKeyword) {
+
+		Rq rq = (Rq) req.getAttribute("rq");
+
+		Board board = boardService.getBoardById(boardId);
+
+		int articlesCount = articleService.getArticlesCount(boardId);
+
+		if (board == null) {
+			return rq.historyBackOnView("없는 게시판이야");
+		}
+
+		if (searchKeyword != null) {
+			int itemsInAPage = 10;
+
+			int pagesCount = (int) Math.ceil(articlesCount / (double) itemsInAPage);
+
+			List<Article> articles = articleService.getForSearchKeywordArticles(searchKeyword, boardId, itemsInAPage,
+					page);
+
+			model.addAttribute("searchKeyword", searchKeyword);
+			model.addAttribute("board", board);
+			model.addAttribute("pagesCount", pagesCount);
+			model.addAttribute("page", page);
+			model.addAttribute("boardId", boardId);
+			model.addAttribute("articlesCount", articlesCount);
+			model.addAttribute("articles", articles);
+
+			return "usr/article/list";
+		}
+
+		// 한페이지에 글 10개씩이야
+		// 글 20개 -> 2 page
+		// 글 24개 -> 3 page
+		int itemsInAPage = 10;
+
+		int pagesCount = (int) Math.ceil(articlesCount / (double) itemsInAPage);
+
+		List<Article> articles = articleService.getForPrintArticles(boardId, itemsInAPage, page);
+
+		model.addAttribute("board", board);
+		model.addAttribute("pagesCount", pagesCount);
+		model.addAttribute("page", page);
+		model.addAttribute("boardId", boardId);
+		model.addAttribute("articlesCount", articlesCount);
+		model.addAttribute("articles", articles);
+
+		return "usr/article/list";
+	}
+
 	@RequestMapping("/usr/article/detail")
 	public String showDetail(HttpServletRequest req, Model model, int id) {
 		Rq rq = (Rq) req.getAttribute("rq");
