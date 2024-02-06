@@ -38,12 +38,7 @@ public class UsrArticleController {
 	// 액션 메서드
 
 	@RequestMapping("/usr/article/list")
-<<<<<<< HEAD
-	public String showList(HttpServletRequest req, Model model, @RequestParam(defaultValue = "1") int boardId)
-			throws IOException {
-=======
 	public String showList(HttpServletRequest req, Model model, @RequestParam(defaultValue = "1") int boardId) {
->>>>>>> 855fc422b26ed22be758632ff22bcbd60d25258f
 
 		Rq rq = (Rq) req.getAttribute("rq");
 
@@ -52,11 +47,8 @@ public class UsrArticleController {
 		List<Article> articles = articleService.getForPrintArticles(boardId);
 
 		if (board == null) {
-<<<<<<< HEAD
 			return rq.historyBackOnView("없는 게시판 입니다.");
-=======
-			return rq.historyBackOnView("없는 게시판이야");
->>>>>>> 855fc422b26ed22be758632ff22bcbd60d25258f
+
 		}
 
 		model.addAttribute("board", board);

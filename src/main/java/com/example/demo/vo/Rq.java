@@ -79,11 +79,8 @@ public class Rq {
 	public String historyBackOnView(String msg) {
 		req.setAttribute("msg", msg);
 		req.setAttribute("historyBack", true);
-<<<<<<< HEAD
+
 		return "/usr/common/js";
-=======
-		return "usr/common/js";
->>>>>>> 855fc422b26ed22be758632ff22bcbd60d25258f
 	}
 
 }
