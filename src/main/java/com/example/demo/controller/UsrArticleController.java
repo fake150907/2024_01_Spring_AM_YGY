@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,7 @@ public class UsrArticleController {
 		int cPage = page;
 		int itemsInAPage = articleService.getItemsInAPage();
 		int totalPage = articleService.getTotalPage();
+		List<Integer> boardTotalPage = articleService.getBoardTotalPage();
 		int boardID = 0;
 		if (boardId == null) {
 			List<Article> articles = articleService.getArticles(page);
@@ -84,6 +86,9 @@ public class UsrArticleController {
 		model.addAttribute("page", page);
 		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("itemsInAPage", itemsInAPage);
+		model.addAttribute("noticeBoardTotalPage", boardTotalPage.get(0));
+		model.addAttribute("freeBoardTotalPage", boardTotalPage.get(1));
+		model.addAttribute("qnaBoardTotalPage", boardTotalPage.get(2));
 		model.addAttribute("board", board);
 		model.addAttribute("boardID", boardID);
 		model.addAttribute("boardId", boardId);

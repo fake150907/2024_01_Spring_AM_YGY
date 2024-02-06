@@ -33,16 +33,41 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<div class="page">
-			<c:if test="${page > 1}">
-				<a href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=1">◀◀</a>
-			</c:if>
-			<c:forEach var="i" begin="${pageStartNum }" end="${pageEndNum}" step="1">
-				<a href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
-			</c:forEach>
-			<c:if test="${totalPage > page }">
-				<a href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${page+1}">▶▶</a>
-			</c:if>
+		<div class="pagination flex justify-center mt-3">
+			<div class="btn-group">
+				<c:if test="${page > 1}">
+					<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+						href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=1">◀◀</a>
+				</c:if>
+				<c:if test="${boardId == null }">
+					<c:forEach var="i" begin="${pageStartNum }" end="${pageEndNum}" step="1">
+						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
+					</c:forEach>
+				</c:if>
+				<c:if test="${board.id == 1}">
+					<c:forEach var="i" begin="${pageStartNum }" end="${noticeBoardTotalPage }" step="1">
+						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
+					</c:forEach>
+				</c:if>
+				<c:if test="${board.id == 2}">
+					<c:forEach var="i" begin="${pageStartNum }" end="${freeBoardTotalPage }" step="1">
+						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
+					</c:forEach>
+				</c:if>
+				<c:if test="${board.id == 3}">
+					<c:forEach var="i" begin="${pageStartNum }" end="${qnaBoardTotalPage }" step="1">
+						<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+							href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${i }">${i }</a>
+					</c:forEach>
+				</c:if>
+				<c:if test="${totalPage > page }">
+					<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }"
+						href="list?<c:if test="${boardId != null}">boardId=${boardId }&</c:if>page=${page+1}">▶▶</a>
+				</c:if>
+			</div>
 		</div>
 	</div>
 </section>

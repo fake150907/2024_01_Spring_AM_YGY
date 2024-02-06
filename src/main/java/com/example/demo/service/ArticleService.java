@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,18 @@ public class ArticleService {
 		int totalCnt = articleRepository.getArticlesTotalCount();
 		int totalPage = (int) Math.ceil((double) totalCnt / itemsInAPage);
 		return totalPage;
+	}
+
+	public List<Integer> getBoardTotalPage() {
+		int itemsInAPage = getItemsInAPage();
+
+		List<Integer> boardTotalCnt = articleRepository.getBoardTotalCount();
+		List<Integer> boardTotalPage = new ArrayList<>();
+		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(0) / itemsInAPage));
+		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(1) / itemsInAPage));
+		boardTotalPage.add((int) Math.ceil((double) boardTotalCnt.get(2) / itemsInAPage));
+
+		return boardTotalPage;
 	}
 
 }

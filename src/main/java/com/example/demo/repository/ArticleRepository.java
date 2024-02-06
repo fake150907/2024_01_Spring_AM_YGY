@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -92,5 +93,14 @@ public interface ArticleRepository {
 			FROM article
 			""")
 	public int getArticlesTotalCount();
+
+	@Select("""
+			SELECT COUNT(*)
+			FROM article AS A
+			INNER JOIN board AS B
+			ON A.boardId = B.id
+			GROUP BY boardId;
+			""")
+	public List<Integer> getBoardTotalCount();
 
 }
