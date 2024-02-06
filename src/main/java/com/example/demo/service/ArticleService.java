@@ -78,12 +78,34 @@ public class ArticleService {
 		return articleRepository.getArticle(id);
 	}
 
-	public List<Article> getArticles() {
-		return articleRepository.getArticles();
+	public List<Article> getArticles(int page) {
+		int itemsInAPage = getItemsInAPage();
+		int limitFrom = (page - 1) * itemsInAPage;
+
+		List<Article> articleRows = articleRepository.getArticles(limitFrom, itemsInAPage);
+
+		return articleRows;
 	}
 
-	public List<Article> getForPrintArticles(int boardId) {
-		return articleRepository.getForPrintArticles(boardId);
+	public List<Article> getForPrintArticles(int boardId, int page) {
+		int itemsInAPage = getItemsInAPage();
+		int limitFrom = (page - 1) * itemsInAPage;
+
+		List<Article> articleRows = articleRepository.getArticleRows(boardId, limitFrom, itemsInAPage);
+
+		return articleRows;
+	}
+
+	public int getItemsInAPage() {
+		return 10;
+	}
+
+	public int getTotalPage() {
+		int itemsInAPage = getItemsInAPage();
+
+		int totalCnt = articleRepository.getArticlesTotalCount();
+		int totalPage = (int) Math.ceil((double) totalCnt / itemsInAPage);
+		return totalPage;
 	}
 
 }

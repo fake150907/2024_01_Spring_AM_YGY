@@ -38,20 +38,55 @@ public class UsrArticleController {
 	// 액션 메서드
 
 	@RequestMapping("/usr/article/list")
-	public String showList(HttpServletRequest req, Model model, @RequestParam(defaultValue = "1") int boardId) {
+	public String showList(HttpServletRequest req, Model model, @RequestParam(required = false) String boardId,
+			@RequestParam(defaultValue = "1") int page) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 
-		Board board = boardService.getBoardById(boardId);
+		int cPage = page;
+		int itemsInAPage = articleService.getItemsInAPage();
+		int totalPage = articleService.getTotalPage();
+		int boardID = 0;
+		if (boardId == null) {
+			List<Article> articles = articleService.getArticles(page);
+			int pageNumber = (cPage - 1) / 10;
+			int pageStartNum = pageNumber * 10 + 1;
+			int pageEndNum = Math.min(pageStartNum + 9, totalPage);
 
-		List<Article> articles = articleService.getForPrintArticles(boardId);
+			model.addAttribute("articles", articles);
+			model.addAttribute("boardId", boardId);
+			model.addAttribute("boardID", boardID);
+			model.addAttribute("pageNumber", pageNumber);
+			model.addAttribute("pageStartNum", pageStartNum);
+			model.addAttribute("pageEndNum", pageEndNum);
+			model.addAttribute("page", page);
+			model.addAttribute("totalPage", totalPage);
+			model.addAttribute("itemsInAPage", itemsInAPage);
+
+			return "usr/article/list";
+		}
+		boardID = Integer.parseInt(boardId);
+
+		Board board = boardService.getBoardById(boardID);
+
+		List<Article> articles = articleService.getForPrintArticles(boardID, cPage);
 
 		if (board == null) {
 			return rq.historyBackOnView("없는 게시판 입니다.");
-
 		}
+		int pageNumber = (cPage - 1) / 10;
+		int pageStartNum = pageNumber * 10 + 1;
+		int pageEndNum = Math.min(pageStartNum + 9, totalPage);
 
+		model.addAttribute("pageNumber", pageNumber);
+		model.addAttribute("pageStartNum", pageStartNum);
+		model.addAttribute("pageEndNum", pageEndNum);
+		model.addAttribute("page", page);
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("itemsInAPage", itemsInAPage);
 		model.addAttribute("board", board);
+		model.addAttribute("boardID", boardID);
+		model.addAttribute("boardId", boardId);
 		model.addAttribute("articles", articles);
 
 		return "usr/article/list";

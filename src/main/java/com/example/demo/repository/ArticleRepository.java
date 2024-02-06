@@ -62,8 +62,9 @@ public interface ArticleRepository {
 			INNER JOIN `member` AS M
 			ON A.memberId = M.id
 			ORDER BY A.id DESC
+			LIMIT #{limitFrom}, #{itemsInAPage}
 			""")
-	public List<Article> getArticles();
+	public List<Article> getArticles(int limitFrom, int itemsInAPage);
 
 	@Select("""
 			SELECT A.*, M.nickname AS extra__writer
@@ -74,5 +75,22 @@ public interface ArticleRepository {
 			ORDER BY A.id DESC
 			""")
 	public List<Article> getForPrintArticles(int boardId);
+
+	@Select("""
+			SELECT A.*, M.nickname AS extra__writer
+			FROM article AS A
+			INNER JOIN `member` AS M
+			ON A.memberId = M.id
+			WHERE boardId = #{boardId}
+			ORDER BY A.id DESC
+			LIMIT #{limitFrom}, #{itemsInAPage}
+			""")
+	public List<Article> getArticleRows(int boardId, int limitFrom, int itemsInAPage);
+
+	@Select("""
+			SELECT COUNT(*) AS cnt
+			FROM article
+			""")
+	public int getArticlesTotalCount();
 
 }
